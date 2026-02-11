@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Валентинка</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #ffd6e8;
+      font-family: "Segoe UI", sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ЗАГРУЗКА + СООБЩЕНИЕ */
+    .loader {
+      position: fixed;
+      inset: 0;
+      background: #ffd6e8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .popup {
+      background: #fff0f5;
+      padding: 30px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+      animation: fadeIn 1s ease forwards;
+      max-width: 300px;
+      width: 85%;
+    }
+
+    .popup h2 {
+      color: #d63384;
+      margin-bottom: 10px;
+      animation: textPop 1s ease forwards;
+    }
+
+    .popup p {
+      color: #a1004f;
+      margin-bottom: 20px;
+      animation: textPop 1s ease forwards;
+    }
+
+    .popup button {
+      font-size: 18px;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 20px;
+      background-color: #ff4d88;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .popup button:hover {
+      background-color: #ff1a66;
+    }
+
+    /* ПАДАЮЩИЕ СЕРДЦА */
+    .falling-heart {
+      position: fixed;
+      top: -10%;
+      width: 20px;
+      height: 20px;
+      background: #ff9bbf;
+      transform: rotate(45deg);
+      opacity: 0.6;
+      animation: fall linear infinite;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .falling-heart::before,
+    .falling-heart::after {
+      content: "";
+      width: 20px;
+      height: 20px;
+      background: #ff9bbf;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .falling-heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .falling-heart::after {
+      left: 10px;
+      top: 0;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(120vh) rotate(45deg);
+      }
+    }
+
+    /* ОСНОВНАЯ КАРТОЧКА */
+    .card {
+      background: #fff0f5;
+      padding: 32px;
+      border-radius: 25px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+      z-index: 1;
+      display: none;
+      animation: fadeIn 1.2s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    h1 {
+      color: #d63384;
+      margin-bottom: 16px;
+      animation: textPop 1s ease forwards;
+    }
+
+    p {
+      font-size: 20px;
+      color: #a1004f;
+      margin: 16px 0;
+      animation: textPop 1s ease forwards;
+    }
+
+    @keyframes textPop {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    img {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 15px;
+      margin: 12px 0;
+      animation: fadeIn 1.2s ease forwards;
+    }
+
+    .buttons {
+      margin-top: 20px;
+      position: relative;
+      height: 70px;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 10px 22px;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    #yesBtn {
+      background-color: #ff4d88;
+      color: white;
+      margin-right: 20px;
+    }
+
+    #yesBtn:hover {
+      background-color: #ff1a66;
+    }
+
+    #noBtn {
+      background-color: #ffc1d9;
+      color: #a1004f;
+      position: absolute;
+    }
+
+    #message {
+      margin-top: 12px;
+      font-size: 18px;
+      color: #b0005a;
+      min-height: 24px;
+      animation: textPop 1s ease forwards;
+    }
+
+    /* СЛЕД ИЗ СЕРДЕЦ */
+    .trail-heart {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: #ff4d88;
+      transform: rotate(45deg);
+      pointer-events: none;
+      opacity: 0.8;
+      animation: trailFade 1.5s ease-out forwards;
+      z-index: 999;
+    }
+
+    .trail-heart::before,
+    .trail-heart::after {
+      content: "";
+      width: 12px;
+      height: 12px;
+      background: inherit;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .trail-heart::before {
+      top: -6px;
+      left: 0;
+    }
+
+    .trail-heart::after {
+      left: 6px;
+      top: 0;
+    }
+
+    @keyframes trailFade {
+      to {
+        opacity: 0;
+        transform: translateY(-25px) rotate(45deg) scale(0.5);
+      }
+    }
+
+    /* ВЗРЫВ СЕРДЕЦ */
+    .burst-heart {
+      position: fixed;
+      width: 14px;
+      height: 14px;
+      background: red;
+      transform: rotate(45deg);
+      pointer-events: none;
+      animation: burst 1.2s ease-out forwards;
+      z-index: 1000;
+    }
+
+    .burst-heart::before,
+    .burst-heart::after {
+      content: "";
+      width: 14px;
+      height: 14px;
+      background: inherit;
+      border-radius: 50%;
+      position: absolute;
+    }
+
+    .burst-heart::before {
+      top: -7px;
+      left: 0;
+    }
+
+    .burst-heart::after {
+      left: 7px;
+      top: 0;
+    }
+
+    @keyframes burst {
+      to {
+        opacity: 0;
+        transform: translate(var(--x), var(--y)) rotate(45deg) scale(0.5);
+      }
+    }
+
+    /* АДАПТАЦИЯ */
+    @media (max-width: 480px) {
+      .card {
+        padding: 24px;
+      }
+
+      h1 {
+        font-size: 22px;
+      }
+
+      p {
+        font-size: 18px;
+      }
+
+      button {
+        font-size: 16px;
+        padding: 8px 18px;
+      }
+
+      img {
+        max-width: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ЗАГРУЗКА С СООБЩЕНИЕМ -->
+  <div class="loader" id="loader">
+    <div class="popup" id="popup">
+      <h2>💌 Получено новое сообщение!</h2>
+      <p>Открыть?</p>
+      <button id="openBtn">Да</button>
+    </div>
+  </div>
+
+  <!-- МУЗЫКА -->
+  <audio id="bgMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- ОСНОВНОЙ КОНТЕНТ -->
+  <div class="card" id="card">
+    <h1>Любимке-Максимке! 💘</h1>
+
+    <!-- Первая фотография -->
+    <img id="mainImage" src="photo1.jpg" alt="Наше фото">
+
+    <p id="question">Ты будешь моей валентинкой?</p>
+
+    <div class="buttons">
+      <button id="yesBtn">Да</button>
+      <button id="noBtn">Нет</button>
+    </div>
+
+    <div id="message"></div>
+  </div>
+
+  <script>
+    // Открытие сообщения + запуск музыки
+    const loader = document.getElementById("loader");
+    const openBtn = document.getElementById("openBtn");
+    const card = document.getElementById("card");
+    const bgMusic = document.getElementById("bgMusic");
+
+    openBtn.addEventListener("click", () => {
+      loader.style.display = "none";
+      card.style.display = "block";
+      bgMusic.play().catch(() => {}); // для мобильных браузеров
+    });
+
+    // Логика кнопок
+    const noBtn = document.getElementById("noBtn");
+    const yesBtn = document.getElementById("yesBtn");
+    const message = document.getElementById("message");
+    const question = document.getElementById("question");
+    const image = document.getElementById("mainImage");
+
+    const noMessages = [
+      "Ты точно хорошо подумал?",
+      "Самое время передумать!",
+      "Кнопка «Да» левее вообще-то",
+      "Ответа «Нет» в твоем мире не существует",
+      "Сначала хорошо подумай, прежде чем шутить"
+    ];
+
+    let noClickCount = 0;
+
+    noBtn.addEventListener("click", () => {
+      const container = document.querySelector(".buttons");
+      const rect = container.getBoundingClientRect();
+
+      const maxX = rect.width - noBtn.offsetWidth;
+      const maxY = rect.height - noBtn.offsetHeight;
+
+      const newX = Math.random() * maxX;
+      const newY = Math.random() * maxY;
+
+      noBtn.style.left = newX + "px";
+      noBtn.style.top = newY + "px";
+
+      message.textContent = noMessages[noClickCount % noMessages.length];
+      noClickCount++;
+    });
+
+    yesBtn.addEventListener("click", (e) => {
+      question.textContent = "Урааа! 💖";
+      message.textContent = "Я знала твой ответ 😘";
+      image.src = "photo2.jpg";
+      yesBtn.style.display = "none";
+      noBtn.style.display = "none";
+
+      // ВЗРЫВ СЕРДЕЦ
+      for (let i = 0; i < 30; i++) {
+        const heart = document.createElement("div");
+        heart.className = "burst-heart";
+        const colors = ["#ff4d88", "#ff1a66", "#ff85b3", "#ff3366"];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        heart.style.background = color;
+        heart.style.left = e.clientX + "px";
+        heart.style.top = e.clientY + "px";
+        heart.style.setProperty("--x", (Math.random() * 200 - 100) + "px");
+        heart.style.setProperty("--y", (Math.random() * 200 - 100) + "px");
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 1200);
+      }
+    });
+
+    // ПЛАВНЫЙ СЛЕД ИЗ СЕРДЕЦ
+    let lastHeartTime = 0;
+    document.addEventListener("mousemove", (e) => {
+      const now = Date.now();
+      if (now - lastHeartTime < 50) return;
+      lastHeartTime = now;
+
+      const heart = document.createElement("div");
+      heart.className = "trail-heart";
+      heart.style.left = e.clientX + "px";
+      heart.style.top = e.clientY + "px";
+
+      const colors = ["#ff4d88", "#ff1a66", "#ff85b3", "#ff3366"];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      heart.style.background = color;
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 1500);
+    });
+
+    // ПАДАЮЩИЕ СЕРДЦА ФОНОМ
+    function createFallingHeart() {
+      const heart = document.createElement("div");
+      heart.className = "falling-heart";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = 7 + Math.random() * 6 + "s";
+      heart.style.opacity = 0.4 + Math.random() * 0.4;
+
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 13000);
+    }
+
+    setInterval(createFallingHeart, 450);
+  </script>
+</body>
+</html>
